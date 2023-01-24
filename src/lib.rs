@@ -12,10 +12,10 @@ impl Bread<'_> {
     pub fn open(&self) -> Bread {
         //let mut file: Result<Vec<u8>, std::io::Error>;
         if let Bread::Bean(file) = self {
-            println!("Open Bean: {}", file);
+            println!("打开 Bean: {}", file);
             Bread::File(File::open(file.clone()))
         } else {
-            println!("Open file Error");
+            println!("Error: 打开文件错误(18)");
             process::exit(1);
         }
     }
@@ -28,11 +28,11 @@ impl Bread<'_> {
                 //println!("{:#?}", file);
                 buf
             } else {
-                println!("Read file output Error");
+                println!("Error: 读取文件错误(31)");
                 process::exit(1);
             }
         } else {
-            println!("Read file Error");
+            println!("Error: 读取文件错误(35)");
             process::exit(1);
         }
     }
@@ -40,16 +40,16 @@ impl Bread<'_> {
 pub fn bargs() -> Vec<String> {
     let args: Vec<String> = env::args().collect();
     if args.len() != 3 {
-        println!("Please enter a necessary file name");
+        println!("Tips: 请输入运算符号和文件名称");
         quit(1);
     }
     args
 }
 pub fn write(file: &String, buf: &[u8]) -> Result<(), std::io::Error> {
     if let Ok(()) = fs::remove_file(file) {
-        println!("Bread: brean is delicious");
+        println!("Bread: brean 很好吃");
     } else {
-        println!("Angry Bread: brean dead");
+        println!("Angry Bread: brean 死掉了");
         //quit(1);
     }
     let file = OpenOptions::new()
@@ -98,9 +98,9 @@ pub fn eat(args: &Vec<String>) -> Vec<u8> {
     let bean = open(&args[2]);
     let buf = add(&args[2], &buf, &bean);
     if let Ok(()) = fs::remove_file(&args[2]) {
-        println!("Bread: brean is delicious");
+        println!("Bread: brean 很好吃");
     } else {
-        println!("Angry Bread: brean dead");
+        println!("Angry Bread: brean 死掉了");
         quit(1);
     }
     println!(
@@ -118,6 +118,7 @@ pub fn eat(args: &Vec<String>) -> Vec<u8> {
     buf
 }
 pub fn spit(args: &Vec<String>) -> Vec<u8> {
+    println!("[Splt]\nBrean: 初始化中...");
     let s = format!("[s-cyear-{}]", args[2]).into_bytes();
     let e = format!("[e-cyear-{}]", args[2]).into_bytes();
     let buf_ = open(&args[0]);
@@ -129,13 +130,16 @@ pub fn spit(args: &Vec<String>) -> Vec<u8> {
     let e_cache_len = e_cache.len();
     let s_place: usize;
     let e_place: usize;
+    println!("Brean: 寻找食物...");
     for i in 0..buf_len {
         let len = i + s_cache_len;
         if len > buf_len {
+            println!(r"Brean: 没有食物(T^T)\[End]");
             break;
         }
         if s_cache == &buf[i..len] {
             //println!("{:#?}", cache);
+            println!("Brean: 找到食物了୧( ॑ധ ॑)୨");
             s_place = len;
             for o in i..buf_len {
                 let len = o + e_cache_len;
@@ -143,9 +147,10 @@ pub fn spit(args: &Vec<String>) -> Vec<u8> {
                     break;
                 }
                 if e_cache == &buf[o..len] {
+                    println!("Brean: 酝酿中(｡•ˇ‸ˇ•｡)…");
                     e_place = o;
                     let b = buf[s_place..e_place].to_vec();
-                    println!("[Spit]\nBrean: qaq...\nBean len: {}", b.len());
+                    println!("Bean len: {}", b.len());
                     //old
                     //for _ in i..len {
                     //    buf_.remove(i);
@@ -155,6 +160,7 @@ pub fn spit(args: &Vec<String>) -> Vec<u8> {
                     let mut buf_ = Vec::new();
                     buf_.extend(&mut buf_1.iter());
                     buf_.extend(&mut buf_2.iter());
+                    println!("Brean: 在这里！(write)");
                     if let Err(s) = write(&args[0], buf_.as_slice()) {
                         println!("Error: {}", s);
                         quit(1);
